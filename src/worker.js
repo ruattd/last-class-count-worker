@@ -48,6 +48,10 @@ function getNow() {
   return DateTime.now().setZone("Asia/Shanghai");
 }
 
+function nextDay(datetime) {
+  return datetime.plus({ days: 1 });
+}
+
 function getCourseArray(datetime, startIndex) {
   let currentPeriod = courses.find(item => datetime >= item.start_date && datetime <= item.end_date);
   if (!currentPeriod) return null;
@@ -76,18 +80,19 @@ function toCourseTable(courseArray, currentIndex) {
 
 function generate() {
   let now = getNow();
-  let todayCourse = getCourseArray(now);
-  let currentTimeIndex = times.findIndex(item => DateTime.fromFormat(item, "HH:mm", { zone: "Asia/Shanghai" }) > now);
-  let lastCourseCount = todayCourse ? times.length - currentTimeIndex : 0;
+  let currentClassIndex = times.findIndex(item => DateTime.fromFormat(item, "HH:mm", { zone: "Asia/Shanghai" }) > now);
+  let todayPassed = currentClassIndex === -1;
+  if (todayPassed) currentClassIndex = times.length;
+  let todayLeft = times.length - currentClassIndex;
   
   let countMap = {};
   Object.keys(map).forEach(key => countMap[key] = 0);
   let countingDate = now;
-  let countingCourse = getCourseArray(now, currentTimeIndex);
+  let countingCourse = getCourseArray(now, currentClassIndex);
   while (true) {
     while (countingCourse) {
       countingCourse.forEach(item => countMap[item]++);
-      countingDate = countingDate.plus({ days: 1 });
+      countingDate = nextDay(countingDate);
       countingCourse = getCourseArray(countingDate);
     }
     let nextPeriod = courses.find(course => course.start_date >= countingDate);
@@ -102,18 +107,20 @@ function generate() {
     if (key !== "0") countTextArray.push(`${map[key]}:\t${countMap[key]}`)
   });
 
+  let courseTableToShow = todayPassed ? toCourseTable(getCourseArray(nextDay(now))) : toCourseTable(getCourseArray(now), currentClassIndex);
+
   let text =
 `NOW: ${now.toFormat("EEEE, MM/dd HH:mm:ss, yyyy")}
 
-TODAY CLASSES
--------------
-${todayCourse ? toCourseTable(todayCourse, currentTimeIndex) : "Nothing"}
-${lastCourseCount} class${lastCourseCount > 1 ? "es" : ""} left today.
+${todayPassed ? "TOMORROW" : "TODAY"} CLASSES
+-------------${todayPassed ? "---" : ""}
+${courseTableToShow ? courseTableToShow : "Nothing"}
+${todayLeft} class${todayLeft > 1 ? "es" : ""} left today.
 
 LAST COUNT
 ----------
 ${countTextArray.join("\n")}
-(by ${countingDate.plus({ days: -1 }).toFormat("MM/dd, yyyy")})
+(before ${countingDate.toFormat("MM/dd, yyyy")})
 `;
   return text;
 }

@@ -1,0 +1,8 @@
+name = "last-course-count"
+main = "src/worker.js"
+workers_dev = true
+compatibility_date = "2025-04-16"
+compatibility_flags = [ "nodejs_compat_do_not_populate_process_env" ]
+
+[observability]
+enabled = true

@@ -9,5 +9,8 @@
 	},
 	"devDependencies": {
 		"wrangler": "^4.11.1"
+	},
+	"dependencies": {
+		"luxon": "^3.6.1"
 	}
 }

@@ -38,6 +38,12 @@ let courses = [
   }
 ];
 
+let times_start = [
+  "07:50", "08:40", "09:40", "10:30", "11:20",
+  "14:30", "15:20", "16:30", "17:20",
+  "19:00", "19:50"
+];
+
 let times = [
   "08:30", "09:20", "10:20", "11:10", "11:50",
   "15:10", "16:00", "17:10", "17:50",
@@ -45,6 +51,7 @@ let times = [
 ];
 
 function getNow() {
+  // return getDate("2025-04-17");
   return DateTime.now().setZone("Asia/Shanghai");
 }
 
@@ -71,11 +78,11 @@ function toCourseTable(courseArray, currentIndex) {
   courseArray.forEach(item => {
     index++;
     if (item === "0") return;
-    let name = map[item];
-    if (currentIndex === index) name = "[" + name + "]";
-    table.push(name);
+    let content = `${times_start[index]}-${times[index]}  ${map[item]}`;
+    if (currentIndex === index) content += " << current/next";
+    table.push(content);
   });
-  return table.join(" ");
+  return table.join("\n");
 }
 
 function generate() {

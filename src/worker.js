@@ -128,6 +128,9 @@ LAST COUNT
 ----------
 ${countTextArray.join("\n")}
 (before ${countingDate.toFormat("MM/dd, yyyy")})
+
+CREATE & DEPLOY BY @ruattd
+ALL RIGHTS RESERVED.
 `;
   return text;
 }

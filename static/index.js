@@ -32,8 +32,11 @@ async function onUpdate(data, times) {
         let start = DateTime.fromISO(times.start_times[index]).toFormat(TIME_FORMAT);
         let end = DateTime.fromISO(times.end_times[index]).toFormat(TIME_FORMAT);
         let text = `${start}-${end} ${item}`;
+        if (!data.today_is_passed && data.current_class_index === index)
+            text = `<b>${text}</b>`
         courseTableArray.push(text);
     });
+    courseTableArray.push(`今天还有 ${data.today_left_classes} 节课`);
     table.innerHTML = courseTableArray.join("<br />");
 }
 

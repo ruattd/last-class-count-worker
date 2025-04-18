@@ -1,0 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200..900&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+body {
+    font-family: "Ubuntu Mono", "Noto Sans Mono", "Consolas", monospace, "Noto Serif SC", "PingFang SC", "Noto Serif CJK SC", "Noto Sans CJK SC", "Microsoft YaHei UI", "Microsoft YaHei", serif, sans-serif;
+}

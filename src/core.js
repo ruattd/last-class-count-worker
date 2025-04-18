@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 
-let map = {
+const map = {
   "Y": "语文",
   "M": "数学",
   "E": "英语",
@@ -17,7 +17,7 @@ function getDate(text) { // DateTime
   return DateTime.fromFormat(text, "yyyy-MM-dd", { zone: "Asia/Shanghai" });
 }
 
-let courses = [
+const courses = [
   {
     start_date: getDate("2025-04-28"),
     end_date: getDate("2025-04-30"),
@@ -38,21 +38,39 @@ let courses = [
   }
 ];
 
-let times_start = [
+const times_start = [
   "07:50", "08:40", "09:40", "10:30", "11:20",
   "14:30", "15:20", "16:30", "17:20",
   "19:00", "19:50"
 ];
 
-let times = [
+const times = [
   "08:30", "09:20", "10:20", "11:10", "11:50",
   "15:10", "16:00", "17:10", "17:50",
   "19:40", "21:10"
 ];
 
+const zone = "Asia/Shanghai"
+
+function getTimesISO(times) { // string[]
+  let timesISO = [];
+  times.forEach(time => {
+    let iso = DateTime.fromFormat(time, "HH:mm", { zone: zone }).toISOTime();
+    timesISO.push(iso);
+  });
+  return timesISO;
+}
+
+function getTimes() { // {}
+  return {
+    start_times: getTimesISO(times_start),
+    end_times: getTimesISO(times),
+  }
+}
+
 function getNow() { // DateTime
   // return getDate("2025-04-17");
-  return DateTime.now().setZone("Asia/Shanghai");
+  return DateTime.now().setZone(zone);
 }
 
 function nextDay(datetime) { // DateTime
@@ -87,7 +105,7 @@ function toCourseTable(courseArray, currentIndex) { // string
 
 function generateObject() { // {}
   let now = getNow();
-  let currentClassIndex = times.findIndex(item => DateTime.fromFormat(item, "HH:mm", { zone: "Asia/Shanghai" }) > now);
+  let currentClassIndex = times.findIndex(item => DateTime.fromFormat(item, "HH:mm", { zone: zone }) > now);
   let todayPassed = currentClassIndex === -1;
   if (todayPassed) currentClassIndex = times.length;
   let todayLeft = times.length - currentClassIndex;
@@ -140,4 +158,5 @@ export default {
     generateObject,
     generateCourseTableText,
     generateCountTableText,
+    getTimes,
 };

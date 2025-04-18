@@ -24,22 +24,31 @@ ALL RIGHTS RESERVED.
   return text;
 }
 
+function generateJsonResponse(obj) {
+  return new Response(JSON.stringify(obj), {
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
 export default {
   async fetch(request, env, ctx) {
     const path = new URL(request.url).pathname;
-    const course = core.generateObject();
 
-    if (path.startsWith("/json")) {
+    if (path.startsWith("/api")) {
+      if (path.startsWith("/api/times")) {
+        return generateJsonResponse(core.getTimes())
+      }
+      let course = core.generateObject();
       course.current_time = course.current_time.toISO();
       course.left_count_end = course.left_count_end.toISODate();
-      return new Response(JSON.stringify(course), {
-        headers: { "Content-Type": "application/json" },
-      });
-    } else if (path.startsWith("/text")) {
-      return new Response(generateText(course), {
+      return generateJsonResponse(course);
+    }
+    if (path.startsWith("/text")) {
+      return new Response(generateText(core.generateObject()), {
         headers: { "Content-Type": "text/plain; charset=utf-8" },
       });
     }
+
     return env.ASSETS.fetch(request);
   },
 };

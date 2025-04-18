@@ -24,8 +24,8 @@ ALL RIGHTS RESERVED.
   return text;
 }
 
-function generateJsonResponse(obj) {
-  return new Response(JSON.stringify(obj), {
+function generateJsonResponse(object) {
+  return new Response(JSON.stringify(object), {
     headers: { "Content-Type": "application/json" },
   });
 }
@@ -39,6 +39,7 @@ export default {
         return generateJsonResponse(core.getTimes())
       }
       let course = core.generateObject();
+      course.course_table = core.generateCourseTableArray(course);
       course.current_time = course.current_time.toISO();
       course.left_count_end = course.left_count_end.toISODate();
       return generateJsonResponse(course);

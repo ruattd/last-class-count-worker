@@ -140,6 +140,15 @@ function generateObject() { // {}
   };
 }
 
+function generateCourseTableArray(course_object) {
+  let targetTime = course_object.today_is_passed ? nextDay(course_object.current_time) : course_object.current_time;
+  let courseArray = getCourseArray(targetTime);
+  if (!courseArray) return [];
+  let resultArray = [];
+  courseArray.forEach(item => resultArray.push(map[item]));
+  return resultArray;
+}
+
 function generateCourseTableText(course_object) { // string
   return course_object.today_is_passed ?
   toCourseTable(getCourseArray(nextDay(course_object.current_time))) :
@@ -156,6 +165,7 @@ function generateCountTableText(course_object) { // string
 
 export default {
     generateObject,
+    generateCourseTableArray,
     generateCourseTableText,
     generateCountTableText,
     getTimes,

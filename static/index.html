@@ -10,9 +10,25 @@
   </head>
   <body>
     <h1>课时倒计时</h1>
-    <p>[当前时间] <span id="datetime"></span></p>
-    <p>[<span id="day"></span>课程]<br /><span id="table"></span></p>
-    <p>[剩余课时]<br /><span id="left"></span></p>
+    <p>
+      <span>[当前时间]</span>
+      <span id="datetime" class="datetime"></span>
+    </p>
+    <p>
+      <span>[</span><span id="day"></span><span>课程]</span>
+      <br />
+      <span id="table"></span>
+    </p>
+    <p>
+      <span>今天还有</span>
+      <span id="left-today" class="left-today"></span>
+      <span>节课</span>
+    </p>
+    <p>
+      <span>[剩余课时]</span>
+      <br />
+      <span id="left"></span>
+    </p>
     <script src="./luxon.min.js" charset="utf-8" type="text/javascript"></script>
     <script src="./index.js" charset="utf-8" type="text/javascript"></script>
   </body>

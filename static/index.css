@@ -1,5 +1,50 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200..900&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 body {
+    color: black;
+    background-color: aliceblue;
     font-family: "Ubuntu Mono", "Noto Sans Mono", "Consolas", monospace, "Noto Serif SC", "PingFang SC", "Noto Serif CJK SC", "Noto Sans CJK SC", "Microsoft YaHei UI", "Microsoft YaHei", serif, sans-serif;
+}
+
+table {
+    margin-top: .4em;
+    border-collapse: collapse;
+    letter-spacing: 1px;
+}
+
+td {
+    min-width: 4em;
+    height: 24px;
+    padding: 0 .2em;
+    border: 1px solid;
+}
+td.number {
+    min-width: 2em;
+    text-align: center;
+}
+
+.left-today {
+    font-weight: bold;
+}
+
+.current {
+    font-weight: bold;
+    color: darkslateblue;
+}
+
+.current.next {
+    color: darkcyan;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        color: aliceblue;
+        background-color: black;
+    }
+    .current {
+        color: lightskyblue;
+    }
+    .current.next {
+        color: aquamarine;
+    }
 }

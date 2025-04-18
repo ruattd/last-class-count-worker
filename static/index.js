@@ -1,10 +1,11 @@
 const datetime = document.getElementById("datetime");
+const day = document.getElementById("day");
 const table = document.getElementById("table");
 const left = document.getElementById("left");
 
 setInterval(() => {
     if (datetime) {
         const d = new Date();
-        datetime.innerHTML = "[当前时间] " + d.toLocaleString();
+        datetime.innerHTML = d.toLocaleString();
     }
 }, 500);

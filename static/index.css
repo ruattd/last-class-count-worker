@@ -1,14 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200..900&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-
 body {
     color: black;
     background-color: aliceblue;
-    font-family: "Ubuntu Mono", "Noto Sans Mono", "Consolas", monospace, "Noto Serif SC", "PingFang SC", "Noto Serif CJK SC", "Noto Sans CJK SC", "Microsoft YaHei UI", "Microsoft YaHei", serif, sans-serif;
+    font-family: "Outfit", "Noto Sans SC", "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
     font-size: medium;
 }
 
+h1, h2 {
+    margin-block-start: .4em;
+    margin-block-end: .3em;
+}
+
+p {
+    margin-block-start: .75em;
+    margin-block-end: .75em;
+}
+
 table {
-    margin-top: .2em;
+    margin-top: .25em;
     border-collapse: collapse;
     letter-spacing: 1px;
 }
@@ -19,9 +27,16 @@ td {
     padding: 0 .2em;
     border: 1px solid;
 }
-td.number {
-    min-width: 3em;
+td.time {
     text-align: center;
+    min-width: 3em;
+}
+td.class {
+    min-width: 2.75em;
+}
+
+.header {
+    font-size: large;
 }
 
 .countdown {
@@ -30,6 +45,11 @@ td.number {
 
 .hint {
     color: darkslategray;
+}
+
+span.time {
+    font-family: "JetBrains Mono", "Noto Sans Mono", "Consolas", "Courier New", Courier, monospace;
+    font-weight: 500;
 }
 
 .current {

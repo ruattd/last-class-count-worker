@@ -15,8 +15,6 @@ const left_days = document.getElementById("left-days");
 const left = document.getElementById("left");
 const count_end = document.getElementById("count-end");
 
-let datetimeString = "";
-let countdownString = "";
 let now;
 let lastRequestIndex = -2;
 
@@ -24,9 +22,9 @@ setInterval(() => {
     now = DateTime.now().setZone(ZONE);
     const datetimeStr = now.toFormat("EEEE DDD TT", { locale: LOCALE });
     if (datetime.innerHTML != datetimeStr) datetime.innerHTML = datetimeStr;
-    const countdown = countdownTarget.diff(now, "days").toObject();
-    const days = Math.floor(countdown.days);
-    if (left_days.innerHTML != days) left_days.innerHTML = days;
+    const countdown = countdownTarget.diff(now, [ "days", "hours", "minutes", "seconds" ]);
+    const countdownStr = countdown.toFormat("d 天 h 小时 m 分钟 s 秒");
+    if (left_days.innerHTML != countdownStr) left_days.innerHTML = countdownStr;
 }, 200);
 
 async function onUpdate(data, times) {
@@ -40,9 +38,9 @@ async function onUpdate(data, times) {
         index++;
         let start = times.start_times[index].toFormat(TIME_FORMAT);
         let end = times.end_times[index].toFormat(TIME_FORMAT);
-        let text = `${start}-${end} ${item}`;
+        let time = `<span class="time">${start}-${end}</span>`
         if (!data.today_is_passed && data.current_class_index === index) {
-            text = `<span id="current" class="current next">${text}</span>`
+            item = `<span id="current" class="current next">${item}</span>`
             const start_next = times.start_times[index];
             if (start_next) {
                 const updater = setInterval(() => {
@@ -52,19 +50,17 @@ async function onUpdate(data, times) {
                     }
                 }, 1000);
             }
-        } else {
-            text = `<span>${text}</span>`;
         }
-        courseTableArray.push(text);
+        courseTableArray.push(`<tr><td class="class">${item}</td><td>${time}</td></tr>`);
     });
-    table.innerHTML = courseTableArray.join("<br />");
+    table.innerHTML = `<table><tbody>${courseTableArray.join("")}</tbody></table>`
     let leftClassesArray = [];
     Object.keys(data.left_count).forEach(key => {
-        let text = `<tr><td>${key}</td><td class="number">${data.left_count[key]}</td></tr>`;
+        let text = `<tr><td>${key}</td><td class="time">${data.left_count[key]}</td></tr>`;
         leftClassesArray.push(text);
     })
     left.innerHTML = `<table><tbody>${leftClassesArray.join("")}</tbody></table>`;
-    count_end.innerHTML = DateTime.fromISO(data.left_count_end).toFormat("yyyy/MM/dd", { locale: LOCALE });
+    count_end.innerHTML = DateTime.fromISO(data.left_count_end).plus({ days: -1 }).toFormat("yyyy/MM/dd", { locale: LOCALE });
 }
 
 console.log("Fetching times");

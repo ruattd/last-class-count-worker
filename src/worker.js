@@ -47,7 +47,7 @@ export default {
       course.left_count_end = course.left_count_end.toISODate();
       let todayLeft = course.course_table.length - course.current_class_index;
       course.today_left_classes = todayLeft > 0 ? todayLeft : 0;
-      course.today_is_passed = todayLeft === 0;
+      course.today_is_passed = todayLeft <= 0;
       return generateJsonResponse(course);
     }
     if (path.startsWith("/text")) {

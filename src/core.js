@@ -90,7 +90,16 @@ function getCourseArray(datetime, startIndex) { // string[]
   return array;
 }
 
-function toCourseTable(courseArray, currentIndex) { // string
+function toCourseTableArray(courseArray) {
+  if (!courseArray) return [];
+  let resultArray = [];
+  courseArray.forEach(item => {
+    if (item !== "0") resultArray.push(map[item])
+  });
+  return resultArray;
+}
+
+function toCourseTableText(courseArray, currentIndex) { // string
   let table = [];
   let index = -1;
   courseArray.forEach(item => {
@@ -137,22 +146,9 @@ function generateObject() { // {}
     today_left_classes: todayLeft, // number
     left_count: resultMap, // object (map)
     left_count_end: countingDate, // DateTime
+    course_table: getCourseArray(now),
+    course_table_tomorrow: getCourseArray(nextDay(now)),
   };
-}
-
-function generateCourseTableArray(course_object) {
-  let targetTime = course_object.today_is_passed ? nextDay(course_object.current_time) : course_object.current_time;
-  let courseArray = getCourseArray(targetTime);
-  if (!courseArray) return [];
-  let resultArray = [];
-  courseArray.forEach(item => resultArray.push(map[item]));
-  return resultArray;
-}
-
-function generateCourseTableText(course_object) { // string
-  return course_object.today_is_passed ?
-  toCourseTable(getCourseArray(nextDay(course_object.current_time))) :
-  toCourseTable(getCourseArray(course_object.current_time), course_object.current_class_index);
 }
 
 function generateCountTableText(course_object) { // string
@@ -165,8 +161,8 @@ function generateCountTableText(course_object) { // string
 
 export default {
     generateObject,
-    generateCourseTableArray,
-    generateCourseTableText,
     generateCountTableText,
     getTimes,
+    toCourseTableArray,
+    toCourseTableText,
 };

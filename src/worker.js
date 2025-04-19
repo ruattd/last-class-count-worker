@@ -1,7 +1,9 @@
 import core from "./core.js";
 
 function generateText(obj) { // string
-  let courseTable = core.generateCourseTableText(obj);
+  let courseTable = obj.today_is_passed ?
+    core.toCourseTableText(obj.course_table_tomorrow) :
+    core.toCourseTableText(obj.course_table, obj.current_class_index);
   let countTable = core.generateCountTableText(obj);
 
   let text =
@@ -39,9 +41,13 @@ export default {
         return generateJsonResponse(core.getTimes())
       }
       let course = core.generateObject();
-      course.course_table = core.generateCourseTableArray(course);
+      course.course_table = core.toCourseTableArray(course.course_table);
+      course.course_table_tomorrow = core.toCourseTableArray(course.course_table_tomorrow)
       course.current_time = course.current_time.toISO();
       course.left_count_end = course.left_count_end.toISODate();
+      let todayLeft = course.course_table.length - course.current_class_index;
+      course.today_left_classes = todayLeft > 0 ? todayLeft : 0;
+      course.today_is_passed = todayLeft === 0;
       return generateJsonResponse(course);
     }
     if (path.startsWith("/text")) {

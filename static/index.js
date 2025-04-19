@@ -2,6 +2,7 @@ const DateTime = luxon.DateTime;
 
 const API_ADDR = "/api";
 const ZONE = "Asia/Shanghai";
+const LOCALE = "zh-CN";
 const TIME_FORMAT = "HH:mm";
 
 const countdownTarget = DateTime.fromISO("2025-05-10T09:00:00.000+08:00");
@@ -12,6 +13,7 @@ const table = document.getElementById("table");
 const left_today = document.getElementById("left-today");
 const left_days = document.getElementById("left-days");
 const left = document.getElementById("left");
+const count_end = document.getElementById("count-end");
 
 let datetimeString = "";
 let countdownString = "";
@@ -20,7 +22,7 @@ let lastRequestIndex = -2;
 
 setInterval(() => {
     now = DateTime.now().setZone(ZONE);
-    const datetimeStr = now.toFormat("EEEE DDD TT", { locale: "zh-CN" });
+    const datetimeStr = now.toFormat("EEEE DDD TT", { locale: LOCALE });
     if (datetime.innerHTML != datetimeStr) datetime.innerHTML = datetimeStr;
     const countdown = countdownTarget.diff(now, "days").toObject();
     const days = Math.floor(countdown.days);
@@ -62,6 +64,7 @@ async function onUpdate(data, times) {
         leftClassesArray.push(text);
     })
     left.innerHTML = `<table><tbody>${leftClassesArray.join("")}</tbody></table>`;
+    count_end.innerHTML = DateTime.fromISO(data.left_count_end).toFormat("yyyy/MM/dd", { locale: LOCALE });
 }
 
 console.log("Fetching times");

@@ -36,6 +36,7 @@ async function onUpdate(data, times) {
     let index = -1;
     courseTable.forEach(item => {
         index++;
+        if (item === "NUL") return;
         let start = times.start_times[index].toFormat(TIME_FORMAT);
         let end = times.end_times[index].toFormat(TIME_FORMAT);
         let time = `<span class="time">${start}-${end}</span>`

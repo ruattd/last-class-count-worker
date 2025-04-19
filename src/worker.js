@@ -45,7 +45,8 @@ export default {
       course.course_table_tomorrow = core.toCourseTableArray(course.course_table_tomorrow)
       course.current_time = course.current_time.toISO();
       course.left_count_end = course.left_count_end.toISODate();
-      let todayLeft = course.course_table.length - course.current_class_index;
+      let nulCount = course.course_table.filter(value => value === "NUL").length;
+      let todayLeft = course.course_table.length - course.current_class_index - nulCount;
       course.today_left_classes = todayLeft > 0 ? todayLeft : 0;
       course.today_is_passed = todayLeft <= 0;
       return generateJsonResponse(course);

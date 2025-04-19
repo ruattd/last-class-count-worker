@@ -93,9 +93,7 @@ function getCourseArray(datetime, startIndex) { // string[]
 function toCourseTableArray(courseArray) {
   if (!courseArray) return [];
   let resultArray = [];
-  courseArray.forEach(item => {
-    if (item !== "0") resultArray.push(map[item])
-  });
+  courseArray.forEach(item => resultArray.push(map[item]));
   return resultArray;
 }
 

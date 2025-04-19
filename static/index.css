@@ -23,13 +23,13 @@ td.number {
     text-align: center;
 }
 
-.left-today {
+.countdown {
     font-weight: bold;
 }
 
 .current {
     font-weight: bold;
-    color: darkslateblue;
+    color: darkblue;
 }
 
 .current.next {

@@ -1,26 +1,30 @@
+const DateTime = luxon.DateTime;
+
 const API_ADDR = "/api";
 const ZONE = "Asia/Shanghai";
 const TIME_FORMAT = "HH:mm";
+
+const countdownTarget = DateTime.fromISO("2025-05-10T09:00:00.000+08:00");
 
 const datetime = document.getElementById("datetime");
 const day = document.getElementById("day");
 const table = document.getElementById("table");
 const left_today = document.getElementById("left-today");
+const left_days = document.getElementById("left-days");
 const left = document.getElementById("left");
 
-const DateTime = luxon.DateTime;
-
 let datetimeString = "";
+let countdownString = "";
 let now;
 let lastRequestIndex = -2;
 
 setInterval(() => {
     now = DateTime.now().setZone(ZONE);
     const datetimeStr = now.toFormat("EEEE DDD TT", { locale: "zh-CN" });
-    if (datetimeString !== datetimeStr) {
-        datetimeString = datetimeStr;
-        datetime.innerHTML = datetimeStr;
-    }
+    if (datetime.innerHTML != datetimeStr) datetime.innerHTML = datetimeStr;
+    const countdown = countdownTarget.diff(now, "days").toObject();
+    const days = Math.floor(countdown.days);
+    if (left_days.innerHTML != days) left_days.innerHTML = days;
 }, 200);
 
 async function onUpdate(data, times) {

@@ -14,6 +14,7 @@ const left_today = document.getElementById("left-today");
 const left_days = document.getElementById("left-days");
 const left = document.getElementById("left");
 const count_end = document.getElementById("count-end");
+const update_time = document.getElementById("update-time");
 
 let now;
 let lastRequestIndex = -2;
@@ -62,6 +63,7 @@ async function onUpdate(data, times) {
     })
     left.innerHTML = `<table><tbody>${leftClassesArray.join("")}</tbody></table>`;
     count_end.innerHTML = DateTime.fromISO(data.left_count_end).plus({ days: -1 }).toFormat("yyyy/MM/dd", { locale: LOCALE });
+    update_time.innerHTML = DateTime.fromISO(data.current_time).toFormat("M/dd HH:mm:ss", { locale: LOCALE });
 }
 
 console.log("Fetching times");

@@ -1,18 +1,26 @@
 import core from "./core.js";
 
 function generateText(obj) { // string
-  let courseTable = obj.today_is_passed ?
+  const courseTable = obj.today_is_passed ?
     core.toCourseTableText(obj.course_table_tomorrow) :
     core.toCourseTableText(obj.course_table, obj.current_class_index);
-  let countTable = core.generateCountTableText(obj);
+  const countTable = core.generateCountTableText(obj);
 
-  let text =
+  let todayLeft = 0;
+  if (!obj.today_is_passed && obj.course_table) {
+    for (let i = 0; i < obj.course_table.length; i++) {
+      if (obj.course_table[i] === "0") continue;
+      if (i >= obj.current_class_index) todayLeft++;
+    }
+  }
+
+  const text =
 `NOW: ${obj.current_time.toFormat("EEEE, MM/dd HH:mm:ss, yyyy")}
 
 ${obj.today_is_passed ? "TOMORROW" : "TODAY"} CLASSES
 -------------${obj.today_is_passed ? "---" : ""}
 ${courseTable ? courseTable : "Nothing"}
-${obj.today_left_classes} class${obj.today_left_classes > 1 ? "es" : ""} left today.
+${todayLeft} class${todayLeft > 1 ? "es" : ""} left today.
 
 LEFT COUNT
 ----------
@@ -45,10 +53,6 @@ export default {
       course.course_table_tomorrow = core.toCourseTableArray(course.course_table_tomorrow)
       course.current_time = course.current_time.toISO();
       course.left_count_end = course.left_count_end.toISODate();
-      let nulCount = course.course_table.filter(value => value === "NUL").length;
-      let todayLeft = course.course_table.length - course.current_class_index - nulCount;
-      course.today_left_classes = todayLeft > 0 ? todayLeft : 0;
-      course.today_is_passed = todayLeft <= 0;
       return generateJsonResponse(course);
     }
     if (path.startsWith("/text")) {

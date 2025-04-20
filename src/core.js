@@ -91,13 +91,14 @@ function getCourseArray(datetime, startIndex) { // string[]
 }
 
 function toCourseTableArray(courseArray) {
-  if (!courseArray) return [];
+  if (!courseArray) return null;
   let resultArray = [];
   courseArray.forEach(item => resultArray.push(map[item]));
   return resultArray;
 }
 
 function toCourseTableText(courseArray, currentIndex) { // string
+  if (!courseArray) return null;
   let table = [];
   let index = -1;
   courseArray.forEach(item => {
@@ -111,11 +112,9 @@ function toCourseTableText(courseArray, currentIndex) { // string
 }
 
 function generateObject() { // {}
-  let now = getNow();
+  const now = getNow();
   let currentClassIndex = times.findIndex(item => DateTime.fromFormat(item, "HH:mm", { zone: zone }) > now);
-  let todayPassed = currentClassIndex === -1;
-  if (todayPassed) currentClassIndex = times.length;
-  let todayLeft = times.length - currentClassIndex;
+  if (currentClassIndex === -1) currentClassIndex = times.length;
   
   let countMap = {};
   Object.keys(map).forEach(key => countMap[key] = 0);
@@ -137,15 +136,20 @@ function generateObject() { // {}
   let resultMap = {};
   Object.keys(countMap).forEach(key => resultMap[map[key]] = countMap[key]);
 
+  const course_table = getCourseArray(now);
+  const course_table_tomorrow = getCourseArray(nextDay(now));
+  let today_is_passed = false;
+  if (course_table) today_is_passed = course_table.length < currentClassIndex;
+  else if (course_table_tomorrow) today_is_passed = true;
+
   return {
     current_time: now,  // DateTime
     current_class_index: currentClassIndex, // number
-    today_is_passed: todayPassed, // boolean
-    today_left_classes: todayLeft, // number
     left_count: resultMap, // object (map)
     left_count_end: countingDate, // DateTime
-    course_table: getCourseArray(now),
-    course_table_tomorrow: getCourseArray(nextDay(now)),
+    course_table,
+    course_table_tomorrow,
+    today_is_passed,
   };
 }
 

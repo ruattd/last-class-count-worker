@@ -29,13 +29,13 @@ setInterval(() => {
 }, 200);
 
 async function onUpdate(data, times) {
-    left_today.innerHTML = data.today_left_classes;
     const todayPassed = data.today_is_passed;
     const courseTable = todayPassed ? data.course_table_tomorrow : data.course_table;
     day.innerHTML = todayPassed ? "明日" : "今日";
     let courseTableArray = [];
     let index = -1;
-    courseTable.forEach(item => {
+    let todayLeft = 0;
+    courseTable?.forEach(item => {
         index++;
         if (item === "NUL") return;
         let start = times.start_times[index].toFormat(TIME_FORMAT);
@@ -53,9 +53,11 @@ async function onUpdate(data, times) {
                 }, 1000);
             }
         }
+        if (!todayPassed && data.current_class_index <= index) todayLeft++;
         courseTableArray.push(`<tr><td class="class">${item}</td><td>${time}</td></tr>`);
     });
-    table.innerHTML = `<table><tbody>${courseTableArray.join("")}</tbody></table>`
+    if (courseTableArray.length > 0) table.innerHTML = `<table><tbody>${courseTableArray.join("")}</tbody></table>`
+    left_today.innerHTML = todayLeft;
     let leftClassesArray = [];
     Object.keys(data.left_count).forEach(key => {
         let text = `<tr><td>${key}</td><td class="time">${data.left_count[key]}</td></tr>`;

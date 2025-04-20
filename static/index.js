@@ -28,7 +28,7 @@ setInterval(() => {
     if (left_days.innerHTML != countdownStr) left_days.innerHTML = countdownStr;
 }, 200);
 
-async function onUpdate(data, times) {
+async function onUpdate(data) {
     const todayPassed = data.today_is_passed;
     const courseTable = todayPassed ? data.course_table_tomorrow : data.course_table;
     day.innerHTML = todayPassed ? "明日" : "今日";
@@ -38,12 +38,12 @@ async function onUpdate(data, times) {
     courseTable?.forEach(item => {
         index++;
         if (item === "NUL") return;
-        let start = times.start_times[index].toFormat(TIME_FORMAT);
-        let end = times.end_times[index].toFormat(TIME_FORMAT);
+        let start = data.start_times[index].toFormat(TIME_FORMAT);
+        let end = data.end_times[index].toFormat(TIME_FORMAT);
         let time = `<span class="time">${start}-${end}</span>`
         if (!data.today_is_passed && data.current_class_index === index) {
             item = `<span id="current" class="current next">${item}</span>`
-            const start_next = times.start_times[index];
+            const start_next = data.start_times[index];
             if (start_next) {
                 const updater = setInterval(() => {
                     if (now > start_next) {
@@ -68,19 +68,26 @@ async function onUpdate(data, times) {
     update_time.innerHTML = DateTime.fromISO(data.current_time).toFormat("M/dd HH:mm:ss", { locale: LOCALE });
 }
 
-console.log("Fetching times");
-fetch(`${API_ADDR}/times`).then(response => {
-    response.json().then(times => {
-        for (let i = 0; i < times.start_times.length && i < times.end_times.length; i++) {
-            times.start_times[i] = DateTime.fromISO(times.start_times[i]);
-            times.end_times[i] = DateTime.fromISO(times.end_times[i]);
-        }
-        setInterval(() => {
-            let currentIndex = times.end_times.findIndex(time => now > time);
-            if (currentIndex <= lastRequestIndex) return;
-            lastRequestIndex = currentIndex;
-            fetch(`${API_ADDR}`).then(response => response.json().then(data => onUpdate(data, times)));
-            console.log("Triggered update");
-        }, 1000);
-    });
+console.log("Fetch times from API");
+fetch(`${API_ADDR}/times`)
+.then(response => response.json())
+.then(times => {
+    console.log("Times: ", structuredClone(times));
+    for (let i = 0; i < times.start_times.length && i < times.end_times.length; i++) {
+        times.start_times[i] = DateTime.fromISO(times.start_times[i]);
+        times.end_times[i] = DateTime.fromISO(times.end_times[i]);
+    }
+    setInterval(() => {
+        let currentIndex = times.end_times.findIndex(time => now > time);
+        if (currentIndex <= lastRequestIndex) return;
+        lastRequestIndex = currentIndex;
+        console.log("Triggered update, fetch data from API");
+        fetch(`${API_ADDR}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("New data: ", data);
+            onUpdate({ ...data, ...times });
+            console.log("Updated");
+        });
+    }, 1000);
 });

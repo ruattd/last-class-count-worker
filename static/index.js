@@ -65,8 +65,8 @@ function onUpdate(data) {
         leftClassesArray.push(text);
     })
     left.innerHTML = `<table><tbody>${leftClassesArray.join("")}</tbody></table>`;
-    count_end.innerHTML = DateTime.fromISO(data.left_count_end).plus({ days: -1 }).toFormat("yyyy/MM/dd", { locale: LOCALE });
-    update_time.innerHTML = DateTime.fromISO(data.current_time).toFormat("M/dd HH:mm:ss", { locale: LOCALE });
+    count_end.innerHTML = data.left_count_end.plus({ days: -1 }).toFormat("yyyy/MM/dd", { locale: LOCALE });
+    update_time.innerHTML = data.current_time.toFormat("M/dd HH:mm:ss", { locale: LOCALE });
 }
 
 function onCheckUpdate(times) {

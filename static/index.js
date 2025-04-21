@@ -64,7 +64,7 @@ function onUpdate(data) {
                         document.getElementById("current").className = "current";
                         clearInterval(updater);
                     }
-                }, 1000);
+                }, 200);
             }
         }
         if (!todayPassed && data.current_class_index <= index) todayLeft++;

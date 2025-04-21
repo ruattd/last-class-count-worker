@@ -19,16 +19,30 @@ const update_time = document.getElementById("update-time");
 let now;
 let lastRequestIndex = -2;
 
-setInterval(() => {
+function onTimeUpdate() {
     now = DateTime.now().setZone(ZONE);
     const datetimeStr = now.toFormat("EEEE DDD TT", { locale: LOCALE });
     if (datetime.innerHTML != datetimeStr) datetime.innerHTML = datetimeStr;
     const countdown = countdownTarget.diff(now, [ "days", "hours", "minutes", "seconds" ]);
     const countdownStr = countdown.toFormat("d 天 h 小时 m 分钟 s 秒");
     if (left_days.innerHTML != countdownStr) left_days.innerHTML = countdownStr;
-}, 200);
+}
 
-async function onUpdate(data) {
+function onCheckUpdate(times) {
+    let currentIndex = times.end_times.findIndex(time => now < time);
+    if (currentIndex <= lastRequestIndex) return;
+    console.log("Triggered update, fetch data from API", { last_request: lastRequestIndex, current: currentIndex });
+    lastRequestIndex = currentIndex;
+    fetch(`${API_ADDR}`)
+    .then(response => response.json())
+    .then(data => {
+        console.log("New data: ", data);
+        onUpdate({ ...data, ...times });
+        console.log("Updated");
+    });
+}
+
+function onUpdate(data) {
     const todayPassed = data.today_is_passed;
     const courseTable = todayPassed ? data.course_table_tomorrow : data.course_table;
     day.innerHTML = todayPassed ? "明日" : "今日";
@@ -68,6 +82,9 @@ async function onUpdate(data) {
     update_time.innerHTML = DateTime.fromISO(data.current_time).toFormat("M/dd HH:mm:ss", { locale: LOCALE });
 }
 
+onTimeUpdate()
+setInterval(() => onTimeUpdate(), 200);
+
 console.log("Fetch times from API");
 fetch(`${API_ADDR}/times`)
 .then(response => response.json())
@@ -77,17 +94,6 @@ fetch(`${API_ADDR}/times`)
         times.start_times[i] = DateTime.fromISO(times.start_times[i]);
         times.end_times[i] = DateTime.fromISO(times.end_times[i]);
     }
-    setInterval(() => {
-        let currentIndex = times.end_times.findIndex(time => now > time);
-        if (currentIndex <= lastRequestIndex) return;
-        lastRequestIndex = currentIndex;
-        console.log("Triggered update, fetch data from API");
-        fetch(`${API_ADDR}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log("New data: ", data);
-            onUpdate({ ...data, ...times });
-            console.log("Updated");
-        });
-    }, 1000);
+    onCheckUpdate(times);
+    setInterval(() => onCheckUpdate(times), 1000);
 });

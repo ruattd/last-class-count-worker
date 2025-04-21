@@ -1,5 +1,7 @@
 import { DateTime } from "luxon";
 
+const zone = "Asia/Shanghai"
+
 const map = {
   "Y": "语文",
   "M": "数学",
@@ -14,7 +16,7 @@ const map = {
 };
 
 function getDate(text) { // DateTime
-  return DateTime.fromFormat(text, "yyyy-MM-dd", { zone: "Asia/Shanghai" });
+  return DateTime.fromFormat(text, "yyyy-MM-dd", { zone: zone });
 }
 
 const courses = [
@@ -49,8 +51,6 @@ const times = [
   "15:10", "16:00", "17:10", "17:50",
   "19:40", "21:10"
 ];
-
-const zone = "Asia/Shanghai"
 
 function getTimesISO(times) { // string[]
   let timesISO = [];

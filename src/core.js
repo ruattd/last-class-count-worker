@@ -138,9 +138,15 @@ function generateObject() { // {}
 
   const course_table = getCourseArray(now);
   const course_table_tomorrow = getCourseArray(nextDay(now));
-  let today_is_passed = false;
-  if (course_table) today_is_passed = course_table.length < currentClassIndex;
-  else if (course_table_tomorrow) today_is_passed = true;
+  let today_is_passed = true;
+  if (course_table) {
+    for (let i = currentClassIndex; i < course_table.length; i++) {
+      if (course_table[i] !== "0") {
+        today_is_passed = false;
+        break;
+      }
+    }
+  }
 
   return {
     current_time: now,  // DateTime

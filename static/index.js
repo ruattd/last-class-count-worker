@@ -17,6 +17,7 @@ const count_end = document.getElementById("count-end");
 const update_time = document.getElementById("update-time");
 
 let now;
+let lastRequestFinished = true;
 let lastRequestIndex = -2;
 
 function onTimeUpdate() {
@@ -26,20 +27,6 @@ function onTimeUpdate() {
     const countdown = countdownTarget.diff(now, [ "days", "hours", "minutes", "seconds" ]);
     const countdownStr = countdown.toFormat("d 天 h 小时 m 分钟 s 秒");
     if (left_days.innerHTML != countdownStr) left_days.innerHTML = countdownStr;
-}
-
-function onCheckUpdate(times) {
-    let currentIndex = times.end_times.findIndex(time => now < time);
-    if (currentIndex <= lastRequestIndex) return;
-    console.log("Triggered update, fetch data from API", { last_request: lastRequestIndex, current: currentIndex });
-    lastRequestIndex = currentIndex;
-    fetch(`${API_ADDR}`)
-    .then(response => response.json())
-    .then(data => {
-        console.log("New data: ", data);
-        onUpdate({ ...data, ...times });
-        console.log("Updated");
-    });
 }
 
 function onUpdate(data) {
@@ -80,6 +67,31 @@ function onUpdate(data) {
     left.innerHTML = `<table><tbody>${leftClassesArray.join("")}</tbody></table>`;
     count_end.innerHTML = DateTime.fromISO(data.left_count_end).plus({ days: -1 }).toFormat("yyyy/MM/dd", { locale: LOCALE });
     update_time.innerHTML = DateTime.fromISO(data.current_time).toFormat("M/dd HH:mm:ss", { locale: LOCALE });
+}
+
+function onCheckUpdate(times) {
+    const end_times = times.end_times;
+    const currentIndex = end_times.findIndex(time => now < time);
+    const lastIndex = currentIndex === -1 ? end_times.length - 1 : currentIndex - 1;
+    if (currentIndex <= lastRequestIndex && (currentIndex !== -1 || lastRequestIndex === -1)) return;
+    if (lastRequestFinished) {
+        lastRequestFinished = false;
+        console.log("Triggered update, fetch data from API", { last_request: lastRequestIndex, current: currentIndex });
+        fetch(`${API_ADDR}`)
+        .finally(() => {
+            lastRequestFinished = true;
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("New data: ", structuredClone(data));
+            data.current_time = DateTime.fromISO(data.current_time);
+            if (lastIndex >= 0 && data.current_time < end_times[lastIndex]) return;
+            data.left_count_end = DateTime.fromISO(data.left_count_end);
+            onUpdate({ ...data, ...times });
+            console.log("Updated");
+            lastRequestIndex = currentIndex;
+        });
+    }
 }
 
 onTimeUpdate()

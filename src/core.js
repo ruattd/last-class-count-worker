@@ -16,7 +16,9 @@ const map = {
 };
 
 function getDate(text) { // DateTime
-  return DateTime.fromFormat(text, "yyyy-MM-dd", { zone: zone });
+  const date = DateTime.fromFormat(text, "yyyy-MM-dd", { zone: zone });
+  date.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+  return date;
 }
 
 const courses = [

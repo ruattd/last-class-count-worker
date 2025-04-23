@@ -29,6 +29,15 @@ const courses = [
     ]
   },
   {
+    start_date: getDate("2025-05-02"),
+    end_date: getDate("2025-05-05"),
+    list: [
+      "YYCE MMCEEE",
+      "DYMM MDDMEE",
+      "DYMM0000 ZZ"
+    ]
+  },
+  {
     start_date: getDate("2025-04-14"),
     end_date: getDate("2025-05-06"),
     list: [

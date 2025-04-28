@@ -26,8 +26,8 @@ const courses = [
     start_date: getDate("2025-04-28"),
     end_date: getDate("2025-04-30"),
     list: [
-      "00000000D00",
-      "00000000 CC"
+      "00000000DPP",
+      "0000000MMCC"
     ]
   },
   {
